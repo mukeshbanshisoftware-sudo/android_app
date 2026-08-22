@@ -7,6 +7,8 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bossly.data.local.SessionManager;
+import com.example.food_design.MainActivity;
 import com.example.food_design.R;
 
 import ui.auth.LoginActivity;
@@ -20,9 +22,15 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        SessionManager sessionManager = new SessionManager(this);
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            // Default to LoginActivity since we removed shared preferences
-            Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+            Intent intent;
+            if (sessionManager.isLoggedIn()) {
+                intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            } else {
+                intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+            }
             startActivity(intent);
             finish();
         }, SPLASH_SCREEN_TIME_OUT);

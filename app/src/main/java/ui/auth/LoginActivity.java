@@ -13,7 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bossly.data.local.SessionManager;
+import com.example.bossly.ui.ViewModelFactory;
+import com.example.bossly.ui.auth.login.LoginViewModel;
+import com.example.bossly.utils.Resource;
 import com.example.food_design.MainActivity;
 import com.example.food_design.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -26,11 +31,17 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView txtForgot, txtSignUp;
     private ProgressBar progressBar;
+    private LoginViewModel viewModel;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        sessionManager = new SessionManager(this);
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
 
         LinearLayout layoutBack = findViewById(R.id.layoutBack);
         layoutBack.setOnClickListener(view -> finish());
@@ -70,24 +81,33 @@ public class LoginActivity extends AppCompatActivity {
             String email = Objects.requireNonNull(etEmail.getText()).toString().trim();
             String password = Objects.requireNonNull(etPassword.getText()).toString().trim();
 
-            setLoading(true);
+            // Bossly login usually requires tenantSlug if known, or it's inferred from email.
+            // Based on the doc, LoginRequest has tenantSlug. 
+            // If the user doesn't provide it, we might need a separate field or get it from previous session.
+            // For now, let's assume tenantSlug is optional or retrieved if available.
+            String tenantSlug = sessionManager.getTenantSlug();
 
-            // Mocking login process
-            btnLogin.postDelayed(() -> {
-                setLoading(false);
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-//                if (email.equals("test@gmail.com") && password.equals("Password@123")) {
-//                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-//                }
-            }, 1000);
+            viewModel.login(email, password, tenantSlug, true).observe(this, resource -> {
+                if (resource.status == Resource.Status.LOADING) {
+                    setLoading(true);
+                } else if (resource.status == Resource.Status.SUCCESS) {
+                    setLoading(false);
+                    if (resource.data != null) {
+                        sessionManager.saveAuthSession(
+                                resource.data.getAccessToken(),
+                                resource.data.getRefreshToken(),
+                                resource.data.getUser()
+                        );
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else if (resource.status == Resource.Status.ERROR) {
+                    setLoading(false);
+                    Toast.makeText(LoginActivity.this, resource.message, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 

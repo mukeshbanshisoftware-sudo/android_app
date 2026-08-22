@@ -51,4 +51,9 @@
     <string name="cart">Cart</string>
     <string name="favorite">Favorite</string>
     <string name="profile">Profile</string>
+    <string name="enter_your_phone_number">enter your phone number</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="my_orders">My Orders</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="logout">Logout</string>
 </resources>
