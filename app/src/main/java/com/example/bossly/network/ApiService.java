@@ -20,5 +20,5 @@ public interface ApiService {
     Call<AuthResponse> refresh(@Body RefreshTokenRequest request);
 
     @POST("auth/logout")
-    Call<Void> logout(@Body LogoutRequest request);
+    Call<LogoutResponse> logout(@Body LogoutRequest request);
 }

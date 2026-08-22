@@ -91,9 +91,9 @@ public class AuthRepository {
         MutableLiveData<Resource<Void>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
 
-        apiService.logout(request).enqueue(new Callback<Void>() {
+        apiService.logout(request).enqueue(new Callback<LogoutResponse>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
                 if (response.isSuccessful()) {
                     data.setValue(Resource.success(null));
                 } else {
@@ -102,7 +102,7 @@ public class AuthRepository {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<LogoutResponse> call, Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });
