@@ -1,5 +1,6 @@
 package com.example.bossly.network;
 
+import android.util.Log;
 import com.example.bossly.data.local.SessionManager;
 import com.example.bossly.data.model.request.RefreshTokenRequest;
 import com.example.bossly.data.model.response.AuthResponse;
@@ -36,6 +37,8 @@ public class AuthInterceptor implements Interceptor {
         String token = sessionManager.getAccessToken();
         Request.Builder builder = originalRequest.newBuilder();
         if (token != null) {
+            // Log the Bearer token for the logged-in user
+            Log.d("AUTH_TOKEN", "Bearer " + token);
             builder.header("Authorization", "Bearer " + token);
         }
 

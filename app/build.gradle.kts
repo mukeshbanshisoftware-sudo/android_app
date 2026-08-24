@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.gson)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.messaging)
+    implementation(platform(libs.firebase.bom))
 
 
 }

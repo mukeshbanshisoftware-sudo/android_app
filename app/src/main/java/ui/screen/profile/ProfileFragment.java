@@ -3,6 +3,7 @@ package ui.screen.profile;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.bossly.network.ApiClient;
 import com.example.bossly.network.ApiService;
 import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,22 +111,32 @@ public class ProfileFragment extends BaseFragment {
         
         String refreshToken = sessionManager.getRefreshToken();
         
-        if (refreshToken != null) {
-            ApiService apiService = ApiClient.getApiService(requireContext());
-            apiService.logout(new LogoutRequest(refreshToken)).enqueue(new Callback<LogoutResponse>() {
-                @Override
-                public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
-                    handleLocalLogout();
-                }
+        // 1. Clear FCM Token so the user stops receiving notifications for this account
+        FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("FCM", "FCM Token deleted successfully on logout");
+            } else {
+                Log.e("FCM", "Failed to delete FCM token", task.getException());
+            }
+            
+            // 2. Proceed with API logout and local session clearing
+            if (refreshToken != null) {
+                ApiService apiService = ApiClient.getApiService(requireContext());
+                apiService.logout(new LogoutRequest(refreshToken)).enqueue(new Callback<LogoutResponse>() {
+                    @Override
+                    public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
+                        handleLocalLogout();
+                    }
 
-                @Override
-                public void onFailure(Call<LogoutResponse> call, Throwable t) {
-                    handleLocalLogout();
-                }
-            });
-        } else {
-            handleLocalLogout();
-        }
+                    @Override
+                    public void onFailure(Call<LogoutResponse> call, Throwable t) {
+                        handleLocalLogout();
+                    }
+                });
+            } else {
+                handleLocalLogout();
+            }
+        });
     }
 
     private void handleLocalLogout() {
