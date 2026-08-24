@@ -7,14 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bossly.base.BaseFragment;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 
-public class ExploreFragment extends Fragment {
-
-    private RecyclerView rvExploreCategories;
+public class ExploreFragment extends BaseFragment {
 
     public ExploreFragment() {}
 
@@ -24,7 +22,11 @@ public class ExploreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_explore, container, false);
     }
 
-
-
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        
+        // Apply Safe Area Insets
+        WindowInsetsManager.applyTopInset(view.findViewById(R.id.txtExploreHeader));
+    }
 }

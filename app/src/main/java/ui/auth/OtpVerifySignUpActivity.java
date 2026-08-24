@@ -13,19 +13,20 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bossly.base.BaseActivity;
 import com.example.bossly.data.local.SessionManager;
 import com.example.bossly.ui.ViewModelFactory;
 import com.example.bossly.ui.auth.verify.VerifyEmailViewModel;
 import com.example.bossly.utils.Resource;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.MainActivity;
 import com.example.food_design.R;
 import com.matrix.otpview.OtpView;
 import com.matrix.otpview.interfaces.OTPCompletionHandler;
 
-public class OtpVerifySignUpActivity extends AppCompatActivity {
+public class OtpVerifySignUpActivity extends BaseActivity {
     private OtpView otpView;
     private Button otpVerify;
     private ProgressBar progressBar;
@@ -37,12 +38,18 @@ public class OtpVerifySignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.otp_verify_activity);
 
+        // Apply Insets
+        View layoutBack = findViewById(R.id.layoutBack);
+        if (layoutBack != null) {
+            WindowInsetsManager.applyTopInset(layoutBack);
+            layoutBack.setOnClickListener(view -> finish());
+        }
+        
+        WindowInsetsManager.applyBottomInset(findViewById(R.id.btnContinueOtp));
+
         sessionManager = new SessionManager(this);
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
         viewModel = new ViewModelProvider(this, factory).get(VerifyEmailViewModel.class);
-
-        LinearLayout layoutBack = findViewById(R.id.layoutBack);
-        layoutBack.setOnClickListener(view -> finish());
 
         otpView = findViewById(R.id.otpView);
         otpVerify = findViewById(R.id.btnContinueOtp);

@@ -7,16 +7,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.bossly.base.BaseActivity;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OnBoardingActivity extends AppCompatActivity {
+public class OnBoardingActivity extends BaseActivity {
 
     private ViewPager2 viewPagerOnboarding;
     private ImageView btnNext;
@@ -32,6 +30,11 @@ public class OnBoardingActivity extends AppCompatActivity {
         setupViewPager();
         setupClickListeners();
         setupDots(0);
+
+        // Apply Safe Area Insets
+        WindowInsetsManager.applyTopInset(tvSkip);
+        WindowInsetsManager.applyBottomInset(btnNext);
+        WindowInsetsManager.applyBottomInset(layoutDots);
     }
 
     private void initViews() {
@@ -42,9 +45,6 @@ public class OnBoardingActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        // Using simplified mock data strings
-
-
         viewPagerOnboarding.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -56,7 +56,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 
     private void setupDots(int position) {
         layoutDots.removeAllViews();
-        int count = 3; // Fixed count for mock
+        int count = 3;
 
         for (int i = 0; i < count; i++) {
             ImageView dot = new ImageView(this);

@@ -1,6 +1,5 @@
 package ui.screen.favorite;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +8,12 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bossly.base.BaseFragment;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 
-import java.util.ArrayList;
-
-
-
-public class FavoriteFragment extends Fragment {
-
-
-    private LinearLayout layoutEmpty;
+public class FavoriteFragment extends BaseFragment {
 
     public FavoriteFragment() {}
 
@@ -36,9 +27,7 @@ public class FavoriteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-
-
-
+        // Apply Safe Area Insets
+        WindowInsetsManager.applyTopInset(view.findViewById(R.id.txtFavoriteHeader));
     }
-
 }

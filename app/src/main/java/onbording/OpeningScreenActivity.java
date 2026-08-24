@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.bossly.base.BaseActivity;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 
 import ui.auth.LoginActivity;
 
-public class OpeningScreenActivity extends AppCompatActivity {
+public class OpeningScreenActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +18,9 @@ public class OpeningScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_opening);
 
         Button btnContinue = findViewById(R.id.btnContinue);
+        
+        // Apply Safe Area Insets to the continue button if it's at the bottom
+        WindowInsetsManager.applyBottomInset(btnContinue);
         
         if (btnContinue != null) {
             btnContinue.setOnClickListener(v -> {

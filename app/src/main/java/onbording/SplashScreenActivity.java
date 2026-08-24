@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.bossly.base.BaseActivity;
 import com.example.bossly.data.local.SessionManager;
 import com.example.food_design.MainActivity;
 import com.example.food_design.R;
 
 import ui.auth.LoginActivity;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends BaseActivity {
 
     private static final int SPLASH_SCREEN_TIME_OUT = 2000;
 

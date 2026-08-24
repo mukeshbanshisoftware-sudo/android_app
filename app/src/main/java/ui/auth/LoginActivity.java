@@ -12,20 +12,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bossly.base.BaseActivity;
 import com.example.bossly.data.local.SessionManager;
 import com.example.bossly.ui.ViewModelFactory;
 import com.example.bossly.ui.auth.login.LoginViewModel;
 import com.example.bossly.utils.Resource;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.MainActivity;
 import com.example.food_design.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private TextInputEditText etEmail, etPassword;
     private Button btnLogin;
@@ -38,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        // Apply Insets for Safe Area
+        WindowInsetsManager.applyTopInset(findViewById(R.id.layoutBack));
+        WindowInsetsManager.applyBottomInset(findViewById(R.id.layoutBottom));
 
         sessionManager = new SessionManager(this);
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
@@ -81,10 +86,6 @@ public class LoginActivity extends AppCompatActivity {
             String email = Objects.requireNonNull(etEmail.getText()).toString().trim();
             String password = Objects.requireNonNull(etPassword.getText()).toString().trim();
 
-            // Bossly login usually requires tenantSlug if known, or it's inferred from email.
-            // Based on the doc, LoginRequest has tenantSlug. 
-            // If the user doesn't provide it, we might need a separate field or get it from previous session.
-            // For now, let's assume tenantSlug is optional or retrieved if available.
             String tenantSlug = sessionManager.getTenantSlug();
 
             viewModel.login(email, password, tenantSlug, true).observe(this, resource -> {

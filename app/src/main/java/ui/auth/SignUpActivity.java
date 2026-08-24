@@ -12,19 +12,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bossly.base.BaseActivity;
 import com.example.bossly.data.local.SessionManager;
 import com.example.bossly.ui.ViewModelFactory;
 import com.example.bossly.ui.auth.register.RegisterViewModel;
 import com.example.bossly.utils.Resource;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BaseActivity {
     private TextInputEditText etUserName, etEmailSignUp, etPasswordSignUp, etPhoneNmber;
     private Button createAccount;
     private TextView signInButton;
@@ -36,6 +37,10 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_activity);
+
+        // Apply Insets for Safe Area
+        WindowInsetsManager.applyTopInset(findViewById(R.id.layoutBack));
+        WindowInsetsManager.applyBottomInset(findViewById(R.id.layoutBottomSingUp));
 
         sessionManager = new SessionManager(this);
         ViewModelFactory factory = ViewModelFactory.getInstance(this);

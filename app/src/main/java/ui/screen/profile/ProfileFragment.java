@@ -13,14 +13,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
+import com.example.bossly.base.BaseFragment;
 import com.example.bossly.data.local.SessionManager;
 import com.example.bossly.data.model.request.LogoutRequest;
 import com.example.bossly.data.model.response.LogoutResponse;
 import com.example.bossly.data.model.response.UserModel;
 import com.example.bossly.network.ApiClient;
 import com.example.bossly.network.ApiService;
+import com.example.bossly.utils.WindowInsetsManager;
 import com.example.food_design.R;
 
 import retrofit2.Call;
@@ -28,7 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ui.auth.LoginActivity;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends BaseFragment {
 
     private LinearLayout btnLogout;
     private TextView txtUserName, txtUserEmail;
@@ -52,6 +53,9 @@ public class ProfileFragment extends Fragment {
         initViews(view);
         displayUserData();
         setupClickListeners();
+        
+        // Apply Safe Area Insets
+        WindowInsetsManager.applyTopInset(view.findViewById(R.id.txtProfileHeader));
     }
 
     private void initViews(View view) {
@@ -105,21 +109,16 @@ public class ProfileFragment extends Fragment {
         
         String refreshToken = sessionManager.getRefreshToken();
         
-        // Even if the API call fails or takes time, we should ensure the user is logged out locally
-        // to prevent them from staying "logged in" on next restart.
-        
         if (refreshToken != null) {
             ApiService apiService = ApiClient.getApiService(requireContext());
             apiService.logout(new LogoutRequest(refreshToken)).enqueue(new Callback<LogoutResponse>() {
                 @Override
                 public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
-                    // API call finished (Success or Error), clear local session
                     handleLocalLogout();
                 }
 
                 @Override
                 public void onFailure(Call<LogoutResponse> call, Throwable t) {
-                    // Network error, still logout locally
                     handleLocalLogout();
                 }
             });
@@ -129,10 +128,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void handleLocalLogout() {
-        // Clear all stored data (Tokens, User Info) from SharedPreferences
         sessionManager.clearSession();
-        
-        // Navigate to Login screen and clear the task stack
         completeLogout();
     }
 
